@@ -1,0 +1,27 @@
+Django Test Utils
+
+Warning! Project at very early stage.
+
+Special class FormTestCase for testing ModelForms. Usage is pretty straight-forward:
+
+For MyModel, MyModelAdminForm and named-url 'create_new_mymodel' we can create a test case:
+
+class MyModelFormTest(FormTestCase):
+    form = MyModelAdminForm
+    urlname = 'create_new_mymodel'
+
+    fixtures = [
+        'mymodel.json',
+    ]
+
+    def test_form(self):
+        post_data = {
+                'name' : 'Test name',
+                'slug' : 'test-slug',
+                'created': '12-03-2011'
+        }
+        exclude_fields = [ 'useless_id', 'somefield' ]
+        self.post(post_data)
+        self.assertModelEquals(post_data, exclude_fields=exclude_fields)
+
+Above magic TestCase is capable of performing a login/logout via django client and test post data against model data inside test db. It inherits from TestCase, so usage is pretty straightforward.
