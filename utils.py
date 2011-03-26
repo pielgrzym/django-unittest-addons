@@ -66,13 +66,6 @@ class FormTestCase(TestCase):
 
 
     def post(self, data, assert_status=200, **kwargs):
-        user = kwargs.get('user', self._default_user)
-        if user:
-            logged_in = self.client.login(username=user[0], password=user[1])
-            self.failUnlessEqual(logged_in, True)
         response = self.client.post(reverse(self._urlname), data)
-        if user:
-            self.client.logout()
         if assert_status:
             self.failUnlessEqual(response.status_code, assert_status)
-
