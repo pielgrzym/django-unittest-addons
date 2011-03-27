@@ -47,6 +47,14 @@ class FormTestCase(TestCase):
         admin.save()
 
     def assertModelEquals(self, data, model_instance=None, **kwargs):
+        """
+        exclude_fields = ['field1', 'field2', 'field3']
+        submodel_fields = {
+            'field1' : ['fk_pointing_to_submodel', 'submodel_field_to_check'],
+            'field2' : ['fk_pointing_to_submodel', 'submodel_field_to_check'],
+            ...
+        }
+        """
         if not model_instance:
             model_instance = self._form_model.objects.get(pk=1)
         exclude_fields = kwargs.get('exclude_fields', None)
