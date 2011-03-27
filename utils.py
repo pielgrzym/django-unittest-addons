@@ -68,7 +68,7 @@ class FormTestCase(TestCase):
         submodel_fields = kwargs.get('submodel_fields', None)
         if submodel_fields:
             for x in submodel_fields.keys():
-                if not data.has_key(x):
+                if data.has_key(x): # check in case exclude_fields removed the key already
                     del data[x] # we don't want to check this field twice
 
                 fname = x
