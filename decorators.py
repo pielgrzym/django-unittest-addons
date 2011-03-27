@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 
 def login(method):
-    def l(self):
+    def l(self, *args, **kwargs):
         username = self._default_user[0]
         password = self._default_user[1]
 

@@ -63,21 +63,24 @@ class FormTestCase(TestCase):
                 del data[field]
 
         form_instance = self._form()
+        form_fields = []
 
         submodel_fields = kwargs.get('submodel_fields', None)
         if submodel_fields:
-            for field in submodel_fields.keys():
-                del data[field]
-            #TODO: un-obfuscate this monstrosity!!!
-            submodel_form_fields = [ (x,
-                                      form_instance.fields[x],
-                                      submodel_fields[x][1],
-                                      getattr(getattr(model_instance, submodel_fields[x][0]), submodel_fields[x][1]))
-                                    for x in submodel_fields.keys() ]
-        form_fields = [ (x, form_instance.fields[x], data[x],
+            for x in submodel_fields.keys():
+                del data[x] # we don't want to check this field twice
+
+                fname = x
+                ftype = form_instance.fields[x]
+                fvalue = submodel_fields[x][1]
+                fk_field = getattr(model_instance, submodel_fields[x][0])
+                mvalue = getattr(fk_field, submodel_fields[x][1])
+
+                form_fields.append((fname,ftype,fvalue,mvalue))
+
+        form_fields += [ (x, form_instance.fields[x], data[x],
                          getattr(model_instance, x)) for x in data.keys() ]
-        if submodel_fields:
-            form_fields = form_fields + submodel_form_fields
+
         for fname, ftype, fvalue, mvalue in form_fields:
             if isinstance(ftype, ModelChoiceField):
                 self.failUnlessEqual(fvalue, mvalue.pk)
