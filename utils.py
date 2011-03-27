@@ -56,7 +56,7 @@ class FormTestCase(TestCase):
         }
         """
         if not model_instance:
-            model_instance = self._form_model.objects.get(pk=1)
+            model_instance = self._form_model.objects.all()[0]
         exclude_fields = kwargs.get('exclude_fields', None)
         if exclude_fields:
             for field in exclude_fields:
@@ -68,7 +68,8 @@ class FormTestCase(TestCase):
         submodel_fields = kwargs.get('submodel_fields', None)
         if submodel_fields:
             for x in submodel_fields.keys():
-                del data[x] # we don't want to check this field twice
+                if not data.has_key(x):
+                    del data[x] # we don't want to check this field twice
 
                 fname = x
                 ftype = form_instance.fields[x]
